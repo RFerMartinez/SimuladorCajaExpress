@@ -1,0 +1,74 @@
+## Archivos y Carpetas Comunes de Visual Studio (VS) y .NET
+
+# Archivos Binarios y de Salida
+# Ignorar las carpetas donde se generan los ejecutables y archivos temporales.
+[Bb]in/
+[Oo]bj/
+[Dd]ebug/
+[Rr]elease/
+*.exe
+*.dll
+*.pdb
+*.ipdb
+*.bak
+*.orig
+*.log
+
+# Carpetas y Archivos de NuGet (Administrador de Paquetes)
+# La carpeta 'packages' para el formato PackageReference ya no se usa, 
+# pero es bueno ignorarla para proyectos antiguos (.NET Framework).
+packages/
+# Archivo de caché de NuGet
+*.nuget.cache
+# Archivo de bloqueo de dependencias (para .NET Core/5+)
+# *.deps.json
+
+# Archivos de Usuario y Configuración de IDE (Visual Studio)
+# Ignorar archivos específicos de la configuración del usuario en VS.
+*.user
+*.suo
+*.sln.docstates
+*.vshost.*
+*.vspscc
+*.vssscc
+*.bak
+*.scc
+*.rptproj.rsuser
+*.rptproj.local
+
+# Carpeta de Configuración de VS (Nueva en VS 2017+)
+# Contiene archivos de caché y metadatos específicos del usuario.
+.vs/
+
+# Resultados de Pruebas y Cobertura
+TestResults/
+*.trx
+*.coverage
+*.runsettings
+
+# Documentación generada
+_ReSharper*/
+*.[Rr]e[Ss]harper[Ee]xtensions
+
+# Archivos de Publicación/Despliegue
+Publish/
+[Ww]eb[Cc]onfig*.config.transform
+*.publish.xml
+
+# Otros archivos generados
+# Por ejemplo, archivos de respaldo de T4
+*.tt.runtime
+
+# --- Específicos de WPF/Windows ---
+# Archivos de diseñador de WPF/XAML
+# Aunque a veces son necesarios, estos suelen ser archivos temporales si se ignoran
+# *.xaml.orig
+# *.xaml.bak
+
+# Archivos de Instaladores
+*.msi
+*.cab
+*.zip
+
+# Visual Studio Code (si usas VS Code para editar)
+.vscode/
