@@ -23,6 +23,25 @@
             </Grid.ColumnDefinitions>
 
             <StackPanel Grid.Column="0">
+
+                <GroupBox Header="Duración de la Simulación" Padding="10" Margin="0,0,0,15" BorderBrush="#007ACC">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="10"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="Semanas a Simular:"/>
+                            <TextBox Text="{Binding Semanas}" Margin="0,5,0,0" Padding="3" FontWeight="Bold"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="2">
+                            <TextBlock Text="Días Laborables/Semana:"/>
+                            <TextBox Text="{Binding DiasPorSemana}" Margin="0,5,0,0" Padding="3"/>
+                        </StackPanel>
+                    </Grid>
+                </GroupBox>
+
                 <GroupBox Header="Recursos Generales" Padding="10" Margin="0,0,0,15">
                     <StackPanel>
                         <TextBlock Text="Cantidad de Cajas (Servidores):"/>
@@ -51,7 +70,6 @@
                 <StackPanel>
                     <GroupBox Header="Tiempos de Servicio (Distribución Normal)" Padding="10">
                         <StackPanel>
-
                             <TextBlock Text="1. CLIENTE ESTÁNDAR" FontWeight="Bold" Foreground="#007ACC" Margin="0,5,0,5"/>
                             <Grid Margin="0,0,0,15">
                                 <Grid.ColumnDefinitions>
@@ -104,7 +122,6 @@
                                     <TextBox Text="{Binding DesvioCarro}" Margin="0,5,0,0" Padding="3"/>
                                 </StackPanel>
                             </Grid>
-
                         </StackPanel>
                     </GroupBox>
                 </StackPanel>

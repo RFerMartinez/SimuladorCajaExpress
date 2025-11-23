@@ -10,6 +10,21 @@ namespace CajaExpressSim.ViewModels
 {
     public class ConfiguracionViewModel : INotifyPropertyChanged
     {
+        // Configuración de Horizonte ---
+        private int _semanas;
+        public int Semanas
+        {
+            get => _semanas;
+            set { _semanas = value; OnPropertyChanged(); }
+        }
+
+        private int _diasPorSemana;
+        public int DiasPorSemana
+        {
+            get => _diasPorSemana;
+            set { _diasPorSemana = value; OnPropertyChanged(); }
+        }
+
         // 1. Recursos
         private int _cantidadCajas;
         public int CantidadCajas
@@ -97,7 +112,9 @@ namespace CajaExpressSim.ViewModels
 
         private void CargarValores()
         {
-            // Carga directa sin matemáticas
+            Semanas = ParametrosGlobales.SemanasASimular;
+            DiasPorSemana = ParametrosGlobales.DiasLaboralesPorSemana;
+
             CantidadCajas = ParametrosGlobales.CantidadCajas;
             TiempoCobro = ParametrosGlobales.TiempoCobroSegundos;
 
@@ -107,8 +124,10 @@ namespace CajaExpressSim.ViewModels
 
             MediaEstandar = ParametrosGlobales.MediaEstandar;
             DesvioEstandar = ParametrosGlobales.DesvioEstandar;
+
             MediaExpress = ParametrosGlobales.MediaExpress;
             DesvioExpress = ParametrosGlobales.DesvioExpress;
+
             MediaCarro = ParametrosGlobales.MediaCarro;
             DesvioCarro = ParametrosGlobales.DesvioCarro;
         }
@@ -121,7 +140,9 @@ namespace CajaExpressSim.ViewModels
                 if (TasaLlegada1 <= 0 || TasaLlegada2 <= 0 || TasaLlegada3 <= 0)
                     throw new Exception("Las tasas de llegada deben ser positivas.");
 
-                // Guardado directo
+                ParametrosGlobales.SemanasASimular = Semanas;
+                ParametrosGlobales.DiasLaboralesPorSemana = DiasPorSemana;
+
                 ParametrosGlobales.CantidadCajas = CantidadCajas;
                 ParametrosGlobales.TiempoCobroSegundos = TiempoCobro;
 

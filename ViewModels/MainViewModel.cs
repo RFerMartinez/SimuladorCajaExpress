@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using CajaExpressSim.Models.Core;
+using CajaExpressSim.Models.Config; // Importante
+using CajaExpressSim.Models.Entidades; // Importante
 using CajaExpressSim.Services;
 using CajaExpressSim.Helpers;
 
@@ -12,122 +15,115 @@ namespace CajaExpressSim.ViewModels
 {
     public class MainViewModel : INotifyPropertyChanged
     {
-        // ==========================================
-        // SUB-VIEWMODELS (Las "Pestañas" de tu app)
-        // ==========================================
         public ConfiguracionViewModel ConfiguracionVM { get; set; }
         public ResultadosViewModel ResultadosVM { get; set; }
 
-        // ==========================================
-        // ESTADO DE LA VISTA
-        // ==========================================
-
-        // Controla qué vista se muestra actualmente (Config vs Resultados)
         private object _vistaActual;
-        public object VistaActual
-        {
-            get => _vistaActual;
-            set { _vistaActual = value; OnPropertyChanged(); }
-        }
+        public object VistaActual { get => _vistaActual; set { _vistaActual = value; OnPropertyChanged(); } }
 
-        // Para mostrar una barra de carga o deshabilitar botones
         private bool _estaSimulando;
         public bool EstaSimulando
         {
             get => _estaSimulando;
-            set
-            {
-                _estaSimulando = value;
-                OnPropertyChanged();
-                // Forzamos actualización del comando para habilitar/deshabilitar botón
-                CommandManager.InvalidateRequerySuggested();
-            }
+            set { _estaSimulando = value; OnPropertyChanged(); CommandManager.InvalidateRequerySuggested(); }
         }
 
         private string _estadoSimulacion;
-        public string EstadoSimulacion
-        {
-            get => _estadoSimulacion;
-            set { _estadoSimulacion = value; OnPropertyChanged(); }
-        }
+        public string EstadoSimulacion { get => _estadoSimulacion; set { _estadoSimulacion = value; OnPropertyChanged(); } }
 
-        // ==========================================
-        // EL MOTOR (El Corazón)
-        // ==========================================
         private MotorSimulacion _motor;
 
-        // ==========================================
-        // COMANDOS
-        // ==========================================
         public ICommand IniciarSimulacionCommand { get; private set; }
         public ICommand VolverConfiguracionCommand { get; private set; }
 
-        // ==========================================
-        // CONSTRUCTOR
-        // ==========================================
         public MainViewModel()
         {
-            // 1. Inicializar los hijos
             ConfiguracionVM = new ConfiguracionViewModel();
             ResultadosVM = new ResultadosViewModel();
             _motor = new MotorSimulacion();
 
-            // 2. Configurar estado inicial
-            VistaActual = ConfiguracionVM; // Empezamos mostrando la configuración
+            VistaActual = ConfiguracionVM;
             EstadoSimulacion = "Listo para iniciar";
             EstaSimulando = false;
 
-            // 3. Inicializar Comandos
             IniciarSimulacionCommand = new RelayCommand(EjecutarSimulacion, PuedeSimular);
             VolverConfiguracionCommand = new RelayCommand(VolverConfiguracion);
         }
 
-        // ==========================================
-        // LÓGICA DE NAVEGACIÓN Y EJECUCIÓN
-        // ==========================================
-
-        private bool PuedeSimular(object obj)
-        {
-            return !EstaSimulando; // Solo se puede pulsar si NO está corriendo
-        }
+        private bool PuedeSimular(object obj) => !EstaSimulando;
 
         private async void EjecutarSimulacion(object obj)
         {
             EstaSimulando = true;
-            EstadoSimulacion = "Inicializando Motor...";
+            EstadoSimulacion = "Preparando simulación...";
 
             try
             {
-                // A. Preparación (Esto ocurre en el hilo principal)
-                _motor.Inicializar();
+                // 1. Calcular días totales
+                int diasTotales = ParametrosGlobales.SemanasASimular * ParametrosGlobales.DiasLaboralesPorSemana;
 
-                // B. Ejecución Pesada (Esto ocurre en un hilo secundario para no congelar la UI)
+                // Acumuladores GLOBALES para todo el periodo
+                List<Cliente> historialGlobal = new List<Cliente>();
+                Dictionary<int, double> tiemposCajasGlobal = new Dictionary<int, double>();
+                int maxColaGlobal = 0;
+
                 await Task.Run(() =>
                 {
-                    EstadoSimulacion = "Simulando eventos...";
-                    _motor.Simular();
+                    // BUCLE DE DÍAS
+                    for (int dia = 1; dia <= diasTotales; dia++)
+                    {
+                        // Actualizar estado en UI (ej: "Simulando Día 3 de 24...")
+                        // Nota: Como estamos en otro hilo, usamos Dispatcher si fuera WPF puro, 
+                        // pero con el binding de string simple suele funcionar si la propiedad notifica.
+                        EstadoSimulacion = $"Simulando Día {dia} de {diasTotales}...";
+
+                        // A. Inicializar Motor (Resetea reloj, colas y cajas para un nuevo día)
+                        _motor.Inicializar();
+
+                        // B. Correr el día
+                        _motor.Simular();
+
+                        // C. ACUMULAR RESULTADOS DE ESTE DÍA
+                        historialGlobal.AddRange(_motor.ClientesAtendidos);
+
+                        if (_motor.GestorColas.MaximaLongitudRegistrada > maxColaGlobal)
+                        {
+                            maxColaGlobal = _motor.GestorColas.MaximaLongitudRegistrada;
+                        }
+
+                        // Acumular tiempo de uso de cajas
+                        foreach (var caja in _motor.Cajas)
+                        {
+                            if (!tiemposCajasGlobal.ContainsKey(caja.Id))
+                                tiemposCajasGlobal[caja.Id] = 0;
+
+                            tiemposCajasGlobal[caja.Id] += caja.TiempoTotalOcupada;
+                        }
+                    }
                 });
 
-                // C. Finalización y Cálculos (De vuelta al hilo principal)
-                EstadoSimulacion = "Calculando estadísticas finales...";
+                EstadoSimulacion = "Calculando estadísticas consolidadas...";
 
-                var reporteFinal = CalculadoraEstadisticas.GenerarReporte(
-                    _motor.ClientesAtendidos,
-                    _motor.Cajas,
-                    _motor.GestorColas.MaximaLongitudRegistrada,
-                    _motor.Reloj.TiempoActual
+                // Calcular tiempo total simulado (Segundos por día * días totales)
+                // 14 horas operativas = 50400 segundos por día
+                double tiempoTotalSimulado = 50400.0 * diasTotales;
+
+                // Llamamos a la calculadora con los datos consolidados
+                // NOTA: Tuvimos que sobrecargar GenerarReporte para aceptar el diccionario de cajas
+                var reporteFinal = CalculadoraEstadisticas.GenerarReporteConsolidado(
+                    historialGlobal,
+                    tiemposCajasGlobal,
+                    maxColaGlobal,
+                    tiempoTotalSimulado
                 );
 
-                // D. Pasar datos a la vista de resultados
                 ResultadosVM.CargarDatos(reporteFinal);
-
-                // E. Cambiar de pantalla
                 VistaActual = ResultadosVM;
-                EstadoSimulacion = "Simulación Completada con Éxito.";
+                EstadoSimulacion = $"Simulación finalizada ({diasTotales} días).";
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Ocurrió un error crítico durante la simulación: {ex.Message}", "Error Fatal", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Error crítico: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 EstadoSimulacion = "Error en la simulación.";
             }
             finally
@@ -142,13 +138,7 @@ namespace CajaExpressSim.ViewModels
             EstadoSimulacion = "Listo para nueva simulación";
         }
 
-        // ==========================================
-        // INotifyPropertyChanged
-        // ==========================================
         public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged([CallerMemberName] string name = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
+        protected void OnPropertyChanged([CallerMemberName] string name = null) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
     }
 }

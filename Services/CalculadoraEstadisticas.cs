@@ -8,45 +8,52 @@ namespace CajaExpressSim.Services
 {
     public static class CalculadoraEstadisticas
     {
+        // Método original (para 1 día, opcional mantenerlo)
         public static ReporteSimulacion GenerarReporte(
             List<Cliente> clientes,
             List<Caja> cajas,
             int maxColaRegistrada,
             double tiempoTotalSimulacion)
         {
+            // Convertir lista de cajas a diccionario y reusar lógica
+            var tiemposDict = cajas.ToDictionary(c => c.Id, c => c.TiempoTotalOcupada);
+            return GenerarReporteConsolidado(clientes, tiemposDict, maxColaRegistrada, tiempoTotalSimulacion);
+        }
+
+        // --- NUEVO MÉTODO CONSOLIDADO ---
+        // Acepta un diccionario con los tiempos ya sumados de todos los días
+        public static ReporteSimulacion GenerarReporteConsolidado(
+            List<Cliente> clientes,
+            Dictionary<int, double> tiemposCajasAcumulados,
+            int maxColaRegistrada,
+            double tiempoTotalSimulacion)
+        {
             var reporte = new ReporteSimulacion();
 
-            // 1. Total Clientes
             reporte.TotalClientesAtendidos = clientes.Count;
 
-            // Validación para evitar división por cero si no se atendió a nadie
-            if (reporte.TotalClientesAtendidos == 0)
-            {
-                return reporte;
-            }
+            if (reporte.TotalClientesAtendidos == 0) return reporte;
 
-            // 2. Promedios (Usamos LINQ para calcular rápido)
-            // W = Tiempo en Sistema (Salida - Llegada)
+            // Promedios (Promedio de todos los clientes de todas las semanas)
             reporte.TiempoPromedioEnSistema = clientes.Average(c => c.ObtenerTiempoEnSistema());
-
-            // Wq = Tiempo en Cola (InicioAtencion - Llegada)
             reporte.TiempoPromedioEnCola = clientes.Average(c => c.ObtenerTiempoEspera());
 
-            // 3. Máximos (Peor caso)
             reporte.TiempoMaximoEspera = clientes.Max(c => c.ObtenerTiempoEspera());
-            reporte.LongitudMaximaCola = maxColaRegistrada; // Dato que viene del GestorDeColas
+            reporte.LongitudMaximaCola = maxColaRegistrada;
 
-            // 4. Utilización por Caja
-            // Fórmula: (TiempoTotalOcupada / TiempoTotalSimulacion) * 100
-            foreach (var caja in cajas)
+            // Cálculo de utilización global
+            foreach (var kvp in tiemposCajasAcumulados)
             {
+                int idCaja = kvp.Key;
+                double tiempoOcupadoTotal = kvp.Value;
+
                 double utilizacion = 0;
                 if (tiempoTotalSimulacion > 0)
                 {
-                    utilizacion = (caja.TiempoTotalOcupada / tiempoTotalSimulacion) * 100;
+                    utilizacion = (tiempoOcupadoTotal / tiempoTotalSimulacion) * 100;
                 }
 
-                reporte.UtilizacionPorCaja.Add(caja.Id, utilizacion);
+                reporte.UtilizacionPorCaja.Add(idCaja, utilizacion);
             }
 
             return reporte;
