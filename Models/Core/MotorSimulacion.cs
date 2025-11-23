@@ -219,20 +219,18 @@ namespace CajaExpressSim.Models.Core
         // ==========================================
         private double ObtenerMediaLlegadaSegunHora(double tiempoSegundos)
         {
-            // 08:00 a 12:00 (4 horas * 3600 = 14400 seg)
-            if (tiempoSegundos < 14400)
+            if (tiempoSegundos < 14400) // 08:00 a 12:00
             {
-                return ParametrosGlobales.MediaLlegadaFranja1;
+                // Ahora usamos la propiedad calculada "Intervalo" que devuelve segundos
+                return ParametrosGlobales.IntervaloLlegadaFranja1;
             }
-            // 12:00 a 15:00 (hasta la hora 7 = 25200 seg)
-            else if (tiempoSegundos < 25200)
+            else if (tiempoSegundos < 25200) // 12:00 a 15:00
             {
-                return ParametrosGlobales.MediaLlegadaFranja2;
+                return ParametrosGlobales.IntervaloLlegadaFranja2;
             }
-            // 15:00 a 22:00
-            else
+            else // 15:00 a 22:00
             {
-                return ParametrosGlobales.MediaLlegadaFranja3;
+                return ParametrosGlobales.IntervaloLlegadaFranja3;
             }
         }
     }

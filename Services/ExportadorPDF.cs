@@ -69,8 +69,9 @@ namespace CajaExpressSim.Services
                             table.Cell().Element(EstiloCelda).Text("Tiempo Extra de Cobro");
                             table.Cell().Element(EstiloCelda).Text($"{ParametrosGlobales.TiempoCobroSegundos} segundos");
 
-                            table.Cell().Element(EstiloCelda).Text("Medias de Llegada (Franjas 1/2/3)");
-                            table.Cell().Element(EstiloCelda).Text($"{ParametrosGlobales.MediaLlegadaFranja1:F1} / {ParametrosGlobales.MediaLlegadaFranja2:F1} / {ParametrosGlobales.MediaLlegadaFranja3:F1} seg");
+                            table.Cell().Element(EstiloCelda).Text("Tasas de Llegada (Franjas 1/2/3)");
+                            // Mostramos la tasa original
+                            table.Cell().Element(EstiloCelda).Text($"{ParametrosGlobales.TasaLlegadaFranja1} / {ParametrosGlobales.TasaLlegadaFranja2} / {ParametrosGlobales.TasaLlegadaFranja3} [Clientes/Hora]");
                         });
 
                         col.Item().PaddingBottom(20); // Espacio grande

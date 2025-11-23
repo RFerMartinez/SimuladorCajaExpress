@@ -4,17 +4,12 @@ using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Input;
 using CajaExpressSim.Models.Config;
-// Asegúrate de tener la clase RelayCommand (te la paso más abajo)
 using CajaExpressSim.Helpers;
 
 namespace CajaExpressSim.ViewModels
 {
     public class ConfiguracionViewModel : INotifyPropertyChanged
     {
-        // ==========================================
-        // PROPIEDADES ENLAZADAS A LA VISTA (BINDING)
-        // ==========================================
-
         // 1. Recursos
         private int _cantidadCajas;
         public int CantidadCajas
@@ -30,36 +25,35 @@ namespace CajaExpressSim.ViewModels
             set { _tiempoCobro = value; OnPropertyChanged(); }
         }
 
-        // 2. Llegadas (Medias en segundos)
-        private double _mediaLlegada1;
-        public double MediaLlegada1
+        // 2. TASAS DE LLEGADA (Directo 80, 140, 100)
+        private double _tasaLlegada1;
+        public double TasaLlegada1
         {
-            get => _mediaLlegada1;
-            set { _mediaLlegada1 = value; OnPropertyChanged(); }
+            get => _tasaLlegada1;
+            set { _tasaLlegada1 = value; OnPropertyChanged(); }
         }
 
-        private double _mediaLlegada2;
-        public double MediaLlegada2
+        private double _tasaLlegada2;
+        public double TasaLlegada2
         {
-            get => _mediaLlegada2;
-            set { _mediaLlegada2 = value; OnPropertyChanged(); }
+            get => _tasaLlegada2;
+            set { _tasaLlegada2 = value; OnPropertyChanged(); }
         }
 
-        private double _mediaLlegada3;
-        public double MediaLlegada3
+        private double _tasaLlegada3;
+        public double TasaLlegada3
         {
-            get => _mediaLlegada3;
-            set { _mediaLlegada3 = value; OnPropertyChanged(); }
+            get => _tasaLlegada3;
+            set { _tasaLlegada3 = value; OnPropertyChanged(); }
         }
 
-        // 3. Tiempos de Servicio (Cliente Estándar)
+        // 3. TIEMPOS DE SERVICIO
         private double _mediaEstandar;
         public double MediaEstandar
         {
             get => _mediaEstandar;
             set { _mediaEstandar = value; OnPropertyChanged(); }
         }
-
         private double _desvioEstandar;
         public double DesvioEstandar
         {
@@ -67,61 +61,80 @@ namespace CajaExpressSim.ViewModels
             set { _desvioEstandar = value; OnPropertyChanged(); }
         }
 
-        // (Podrías agregar aquí las propiedades para Express y CarroCompleto igual que arriba)
-        // Por brevedad, asumo que completarás las demás siguiendo el patrón.
+        private double _mediaExpress;
+        public double MediaExpress
+        {
+            get => _mediaExpress;
+            set { _mediaExpress = value; OnPropertyChanged(); }
+        }
+        private double _desvioExpress;
+        public double DesvioExpress
+        {
+            get => _desvioExpress;
+            set { _desvioExpress = value; OnPropertyChanged(); }
+        }
 
-        // ==========================================
-        // COMANDOS (Botones)
-        // ==========================================
+        private double _mediaCarro;
+        public double MediaCarro
+        {
+            get => _mediaCarro;
+            set { _mediaCarro = value; OnPropertyChanged(); }
+        }
+        private double _desvioCarro;
+        public double DesvioCarro
+        {
+            get => _desvioCarro;
+            set { _desvioCarro = value; OnPropertyChanged(); }
+        }
+
         public ICommand GuardarCommand { get; private set; }
 
-        // ==========================================
-        // CONSTRUCTOR
-        // ==========================================
         public ConfiguracionViewModel()
         {
-            // 1. Cargar valores actuales de la configuración global
             CargarValores();
-
-            // 2. Inicializar el comando del botón
             GuardarCommand = new RelayCommand(GuardarCambios);
         }
 
         private void CargarValores()
         {
+            // Carga directa sin matemáticas
             CantidadCajas = ParametrosGlobales.CantidadCajas;
             TiempoCobro = ParametrosGlobales.TiempoCobroSegundos;
 
-            MediaLlegada1 = ParametrosGlobales.MediaLlegadaFranja1;
-            MediaLlegada2 = ParametrosGlobales.MediaLlegadaFranja2;
-            MediaLlegada3 = ParametrosGlobales.MediaLlegadaFranja3;
+            TasaLlegada1 = ParametrosGlobales.TasaLlegadaFranja1;
+            TasaLlegada2 = ParametrosGlobales.TasaLlegadaFranja2;
+            TasaLlegada3 = ParametrosGlobales.TasaLlegadaFranja3;
 
             MediaEstandar = ParametrosGlobales.MediaEstandar;
             DesvioEstandar = ParametrosGlobales.DesvioEstandar;
-            // ... cargar el resto ...
+            MediaExpress = ParametrosGlobales.MediaExpress;
+            DesvioExpress = ParametrosGlobales.DesvioExpress;
+            MediaCarro = ParametrosGlobales.MediaCarro;
+            DesvioCarro = ParametrosGlobales.DesvioCarro;
         }
 
-        // ==========================================
-        // LÓGICA DEL BOTÓN GUARDAR
-        // ==========================================
         private void GuardarCambios(object parameter)
         {
             try
             {
-                // Validación básica
                 if (CantidadCajas <= 0) throw new Exception("Debe haber al menos 1 caja.");
-                if (MediaLlegada1 <= 0) throw new Exception("Los tiempos deben ser positivos.");
+                if (TasaLlegada1 <= 0 || TasaLlegada2 <= 0 || TasaLlegada3 <= 0)
+                    throw new Exception("Las tasas de llegada deben ser positivas.");
 
-                // Transferir valores de la Pantalla a la clase Estática
+                // Guardado directo
                 ParametrosGlobales.CantidadCajas = CantidadCajas;
                 ParametrosGlobales.TiempoCobroSegundos = TiempoCobro;
 
-                ParametrosGlobales.MediaLlegadaFranja1 = MediaLlegada1;
-                ParametrosGlobales.MediaLlegadaFranja2 = MediaLlegada2;
-                ParametrosGlobales.MediaLlegadaFranja3 = MediaLlegada3;
+                ParametrosGlobales.TasaLlegadaFranja1 = TasaLlegada1;
+                ParametrosGlobales.TasaLlegadaFranja2 = TasaLlegada2;
+                ParametrosGlobales.TasaLlegadaFranja3 = TasaLlegada3;
 
                 ParametrosGlobales.MediaEstandar = MediaEstandar;
                 ParametrosGlobales.DesvioEstandar = DesvioEstandar;
+                ParametrosGlobales.MediaExpress = MediaExpress;
+                ParametrosGlobales.DesvioExpress = DesvioExpress;
+                ParametrosGlobales.MediaCarro = MediaCarro;
+                ParametrosGlobales.DesvioCarro = DesvioCarro;
 
                 MessageBox.Show("¡Configuración guardada correctamente!", "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
             }
@@ -131,9 +144,6 @@ namespace CajaExpressSim.ViewModels
             }
         }
 
-        // ==========================================
-        // IMPLEMENTACIÓN INotifyPropertyChanged
-        // ==========================================
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged([CallerMemberName] string name = null)
         {

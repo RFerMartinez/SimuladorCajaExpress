@@ -23,7 +23,7 @@ namespace CajaExpressSim.Services
             sb.AppendLine("CONFIGURACIÓN APLICADA:");
             sb.AppendLine($"* Cantidad de Cajas: {ParametrosGlobales.CantidadCajas}");
             sb.AppendLine($"* Tiempo de Cobro Fijo: {ParametrosGlobales.TiempoCobroSegundos} seg");
-            sb.AppendLine($"* Medias de Llegada (Seg): {ParametrosGlobales.MediaLlegadaFranja1} / {ParametrosGlobales.MediaLlegadaFranja2} / {ParametrosGlobales.MediaLlegadaFranja3}");
+            sb.AppendLine($"* Tasas de Llegada (Clientes/Hora): {ParametrosGlobales.TasaLlegadaFranja1} / {ParametrosGlobales.TasaLlegadaFranja2} / {ParametrosGlobales.TasaLlegadaFranja3}");
             sb.AppendLine("----------------------------------------");
 
             // 3. MÉTRICAS PRINCIPALES

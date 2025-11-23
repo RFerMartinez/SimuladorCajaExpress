@@ -1,29 +1,37 @@
-﻿using System.Collections.Generic;
-
-namespace CajaExpressSim.Models.Config
+﻿namespace CajaExpressSim.Models.Config
 {
     public static class ParametrosGlobales
     {
         // ==========================================
-        // PARAMETROS DE RECURSOS Y TIEMPO
+        // PARAMETROS DE RECURSOS
         // ==========================================
-        public static int CantidadCajas { get; set; } = 3; // Valor por defecto: 3
-
-        // EL NUEVO DATO QUE PEDISTE: Tiempo fijo que demora el cobro (tarjeta/efectivo)
-        // Se sumará al tiempo de escaneo de artículos.
+        public static int CantidadCajas { get; set; } = 3;
         public static double TiempoCobroSegundos { get; set; } = 0;
 
         // ==========================================
-        // PARAMETROS DE LLEGADA (Tasas)
+        // TASAS DE LLEGADA (NUEVO: Fuente de Verdad = Clientes/Hora)
         // ==========================================
-        // Medias de tiempo entre llegadas (en segundos) para cada franja
-        // Franja 1 (08-12), Franja 2 (12-15), Franja 3 (15-22)
-        public static double MediaLlegadaFranja1 { get; set; } = 45.0; // 80 cl/h
-        public static double MediaLlegadaFranja2 { get; set; } = 25.7; // 140 cl/h
-        public static double MediaLlegadaFranja3 { get; set; } = 36.0; // 100 cl/h
+        // Franja 1 (08-12): 80 clientes/h
+        public static double TasaLlegadaFranja1 { get; set; } = 80;
+
+        // Franja 2 (12-15): 140 clientes/h
+        public static double TasaLlegadaFranja2 { get; set; } = 140;
+
+        // Franja 3 (15-22): 100 clientes/h
+        public static double TasaLlegadaFranja3 { get; set; } = 100;
 
         // ==========================================
-        // PARAMETROS DE SERVICIO (Medias y Desvíos)
+        // PROPIEDADES COMPUTADAS (Conversión automática para el Motor)
+        // ==========================================
+        // El motor necesita "Segundos entre clientes", así que lo calculamos aquí mismo.
+        // Fórmula: 3600 / Tasa
+
+        public static double IntervaloLlegadaFranja1 => TasaLlegadaFranja1 > 0 ? 3600.0 / TasaLlegadaFranja1 : 0;
+        public static double IntervaloLlegadaFranja2 => TasaLlegadaFranja2 > 0 ? 3600.0 / TasaLlegadaFranja2 : 0;
+        public static double IntervaloLlegadaFranja3 => TasaLlegadaFranja3 > 0 ? 3600.0 / TasaLlegadaFranja3 : 0;
+
+        // ==========================================
+        // PARAMETROS DE SERVICIO
         // ==========================================
         // Estándar
         public static double MediaEstandar { get; set; } = 100;
