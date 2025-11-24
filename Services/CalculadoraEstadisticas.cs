@@ -8,20 +8,6 @@ namespace CajaExpressSim.Services
 {
     public static class CalculadoraEstadisticas
     {
-        // Método original (para 1 día, opcional mantenerlo)
-        public static ReporteSimulacion GenerarReporte(
-            List<Cliente> clientes,
-            List<Caja> cajas,
-            int maxColaRegistrada,
-            double tiempoTotalSimulacion)
-        {
-            // Convertir lista de cajas a diccionario y reusar lógica
-            var tiemposDict = cajas.ToDictionary(c => c.Id, c => c.TiempoTotalOcupada);
-            return GenerarReporteConsolidado(clientes, tiemposDict, maxColaRegistrada, tiempoTotalSimulacion);
-        }
-
-        // --- NUEVO MÉTODO CONSOLIDADO ---
-        // Acepta un diccionario con los tiempos ya sumados de todos los días
         public static ReporteSimulacion GenerarReporteConsolidado(
             List<Cliente> clientes,
             Dictionary<int, double> tiemposCajasAcumulados,
@@ -29,34 +15,59 @@ namespace CajaExpressSim.Services
             double tiempoTotalSimulacion)
         {
             var reporte = new ReporteSimulacion();
-
             reporte.TotalClientesAtendidos = clientes.Count;
 
             if (reporte.TotalClientesAtendidos == 0) return reporte;
 
-            // Promedios (Promedio de todos los clientes de todas las semanas)
-            reporte.TiempoPromedioEnSistema = clientes.Average(c => c.ObtenerTiempoEnSistema());
-            reporte.TiempoPromedioEnCola = clientes.Average(c => c.ObtenerTiempoEspera());
+            // 1. Extraer listas de tiempos para cálculos
+            var tiemposEspera = clientes.Select(c => c.ObtenerTiempoEspera()).OrderBy(t => t).ToList();
+            var tiemposSistema = clientes.Select(c => c.ObtenerTiempoEnSistema()).ToList();
 
-            reporte.TiempoMaximoEspera = clientes.Max(c => c.ObtenerTiempoEspera());
+            // 2. Promedios (W y Wq)
+            reporte.TiempoPromedioEnSistema = tiemposSistema.Average();
+            reporte.TiempoPromedioEnCola = tiemposEspera.Average();
+
+            // 3. NUEVO: Calcular Largo Promedio de Cola (Lq)
+            // Fórmula: Lq = (Suma Total de Tiempos de Espera) / Tiempo Total de Simulación
+            // Esto es equivalente a la Ley de Little: Lq = Lambda * Wq
+            double sumaTotalEspera = tiemposEspera.Sum();
+            if (tiempoTotalSimulacion > 0)
+            {
+                reporte.LargoColaPromedio = sumaTotalEspera / tiempoTotalSimulacion;
+            }
+
+            // 4. Picos
+            reporte.TiempoMaximoEspera = tiemposEspera.LastOrDefault(); // El último es el mayor porque ordenamos
             reporte.LongitudMaximaCola = maxColaRegistrada;
 
-            // Cálculo de utilización global
+            // 5. NUEVO: Cálculo de Percentiles
+            reporte.Percentil50 = CalcularPercentil(tiemposEspera, 0.50);
+            reporte.Percentil90 = CalcularPercentil(tiemposEspera, 0.90);
+            reporte.Percentil95 = CalcularPercentil(tiemposEspera, 0.95);
+
+            // 6. Utilización
             foreach (var kvp in tiemposCajasAcumulados)
             {
-                int idCaja = kvp.Key;
-                double tiempoOcupadoTotal = kvp.Value;
-
                 double utilizacion = 0;
                 if (tiempoTotalSimulacion > 0)
-                {
-                    utilizacion = (tiempoOcupadoTotal / tiempoTotalSimulacion) * 100;
-                }
+                    utilizacion = (kvp.Value / tiempoTotalSimulacion) * 100;
 
-                reporte.UtilizacionPorCaja.Add(idCaja, utilizacion);
+                reporte.UtilizacionPorCaja.Add(kvp.Key, utilizacion);
             }
 
             return reporte;
+        }
+
+        // Método auxiliar para percentiles
+        private static double CalcularPercentil(List<double> listaOrdenada, double percentil)
+        {
+            if (listaOrdenada.Count == 0) return 0;
+
+            int indice = (int)Math.Ceiling(percentil * listaOrdenada.Count) - 1;
+            if (indice < 0) indice = 0;
+            if (indice >= listaOrdenada.Count) indice = listaOrdenada.Count - 1;
+
+            return listaOrdenada[indice];
         }
     }
 }

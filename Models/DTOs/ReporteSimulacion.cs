@@ -2,38 +2,30 @@
 
 namespace CajaExpressSim.Models.DTOs
 {
-    // DTO: Data Transfer Object (Objeto simple para transportar datos)
     public class ReporteSimulacion
     {
-        // ==========================================
-        // MÉTRICAS GENERALES
-        // ==========================================
+        // Métricas Generales
         public int TotalClientesAtendidos { get; set; }
+        public double TiempoPromedioEnSistema { get; set; } // W
+        public double TiempoPromedioEnCola { get; set; }    // Wq
 
-        // W: Tiempo desde que llega hasta que sale
-        public double TiempoPromedioEnSistema { get; set; }
+        // NUEVO: Largo de Cola Promedio (Lq)
+        public double LargoColaPromedio { get; set; }       // Lq
 
-        // Wq: Tiempo desde que llega hasta que lo atienden
-        public double TiempoPromedioEnCola { get; set; }
-
-        // ==========================================
-        // INDICADORES DE CALIDAD DE SERVICIO
-        // ==========================================
-        // El peor tiempo que alguien esperó
+        // Métricas de Calidad (Picos y Percentiles)
         public double TiempoMaximoEspera { get; set; }
-
-        // La fila más larga que se formó
         public int LongitudMaximaCola { get; set; }
 
-        // ==========================================
-        // UTILIZACIÓN POR RECURSO
-        // ==========================================
-        // Diccionario: ID Caja (int) -> Porcentaje Ocupación (double)
+        // NUEVO: Percentiles
+        public double Percentil50 { get; set; } // Mediana
+        public double Percentil90 { get; set; }
+        public double Percentil95 { get; set; }
+
+        // Utilización
         public Dictionary<int, double> UtilizacionPorCaja { get; set; }
 
         public ReporteSimulacion()
         {
-            // Inicializamos el diccionario para evitar errores de nulos
             UtilizacionPorCaja = new Dictionary<int, double>();
         }
     }

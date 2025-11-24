@@ -19,49 +19,27 @@ namespace CajaExpressSim.ViewModels
         // ==========================================
         // PROPIEDADES VISUALES (Bindings)
         // ==========================================
-        // Estas son las variables que verá tu pantalla XAML
 
-        private int _totalClientes;
-        public int TotalClientes
-        {
-            get => _totalClientes;
-            set { _totalClientes = value; OnPropertyChanged(); }
-        }
+        // KPIs Superiores
+        private double _promedioSistema; public double PromedioSistema { get => _promedioSistema; set { _promedioSistema = value; OnPropertyChanged(); } }
+        private double _promedioCola; public double PromedioCola { get => _promedioCola; set { _promedioCola = value; OnPropertyChanged(); } }
 
-        private double _promedioSistema;
-        public double PromedioSistema
-        {
-            get => _promedioSistema;
-            set { _promedioSistema = value; OnPropertyChanged(); }
-        }
+        // NUEVO: Lq
+        private double _largoColaPromedio;
+        public double LargoColaPromedio { get => _largoColaPromedio; set { _largoColaPromedio = value; OnPropertyChanged(); } }
 
-        private double _promedioCola;
-        public double PromedioCola
-        {
-            get => _promedioCola;
-            set { _promedioCola = value; OnPropertyChanged(); }
-        }
+        private int _maxCola; public int MaxCola { get => _maxCola; set { _maxCola = value; OnPropertyChanged(); } }
 
-        private double _maxEspera;
-        public double MaxEspera
-        {
-            get => _maxEspera;
-            set { _maxEspera = value; OnPropertyChanged(); }
-        }
+        // Métricas de Detalle y Críticas
+        private int _totalClientes; public int TotalClientes { get => _totalClientes; set { _totalClientes = value; OnPropertyChanged(); } }
+        private double _maxEspera; public double MaxEspera { get => _maxEspera; set { _maxEspera = value; OnPropertyChanged(); } }
 
-        private int _maxCola;
-        public int MaxCola
-        {
-            get => _maxCola;
-            set { _maxCola = value; OnPropertyChanged(); }
-        }
+        // NUEVO: Percentiles
+        private double _p50; public double P50 { get => _p50; set { _p50 = value; OnPropertyChanged(); } }
+        private double _p90; public double P90 { get => _p90; set { _p90 = value; OnPropertyChanged(); } }
+        private double _p95; public double P95 { get => _p95; set { _p95 = value; OnPropertyChanged(); } }
 
-        // Lista especial para mostrar la tabla de Cajas en la UI
         public ObservableCollection<UtilizacionItem> ListaUtilizacion { get; set; }
-
-        // ==========================================
-        // COMANDOS (Botones)
-        // ==========================================
         public ICommand ExportarPdfCommand { get; private set; }
         public ICommand ExportarTxtCommand { get; private set; }
 
@@ -85,22 +63,24 @@ namespace CajaExpressSim.ViewModels
         {
             _reporteActual = reporte;
 
-            // 1. Asignar propiedades simples
-            TotalClientes = reporte.TotalClientesAtendidos;
+            // Asignaciones
             PromedioSistema = reporte.TiempoPromedioEnSistema;
             PromedioCola = reporte.TiempoPromedioEnCola;
-            MaxEspera = reporte.TiempoMaximoEspera;
+            LargoColaPromedio = reporte.LargoColaPromedio; // NUEVO
             MaxCola = reporte.LongitudMaximaCola;
+            TotalClientes = reporte.TotalClientesAtendidos;
+            MaxEspera = reporte.TiempoMaximoEspera;
 
-            // 2. Llenar la lista de utilización
+            // Percentiles NUEVOS
+            P50 = reporte.Percentil50;
+            P90 = reporte.Percentil90;
+            P95 = reporte.Percentil95;
+
+            // Lista
             ListaUtilizacion.Clear();
             foreach (var kvp in reporte.UtilizacionPorCaja)
             {
-                ListaUtilizacion.Add(new UtilizacionItem
-                {
-                    IdCaja = kvp.Key,
-                    Porcentaje = kvp.Value
-                });
+                ListaUtilizacion.Add(new UtilizacionItem { IdCaja = kvp.Key, Porcentaje = kvp.Value });
             }
         }
 

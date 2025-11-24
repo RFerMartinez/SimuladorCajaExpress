@@ -3,6 +3,73 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:SIMULADOR">
     <Application.Resources>
-         
+        <SolidColorBrush x:Key="ColorFondoPrincipal" Color="#121826"/>
+        <SolidColorBrush x:Key="ColorFondoTarjeta" Color="#1E2532"/>
+        <SolidColorBrush x:Key="ColorBordeTarjeta" Color="#2C3545"/>
+        <SolidColorBrush x:Key="ColorTextoPrincipal" Color="#FFFFFF"/>
+        <SolidColorBrush x:Key="ColorTextoSecundario" Color="#A0AEC0"/>
+
+        <SolidColorBrush x:Key="ColorAccionVerde" Color="#48BB78"/>
+        <SolidColorBrush x:Key="ColorAccionAzul" Color="#4299E1"/>
+        <SolidColorBrush x:Key="ColorPeligro" Color="#F56565"/>
+        <Style x:Key="EstiloTarjeta" TargetType="Border">
+            <Setter Property="Background" Value="{StaticResource ColorFondoTarjeta}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource ColorBordeTarjeta}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Padding" Value="15"/>
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect Color="Black" Opacity="0.3" BlurRadius="10" ShadowDepth="2"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="TituloTarjeta" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{StaticResource ColorTextoSecundario}"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Margin" Value="0,0,0,10"/>
+        </Style>
+
+        <Style TargetType="TextBox">
+            <Setter Property="Background" Value="#2D3748"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="#4A5568"/>
+            <Setter Property="Padding" Value="5"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                BorderThickness="1" CornerRadius="4">
+                            <ScrollViewer x:Name="PART_ContentHost"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="BotonVerde" TargetType="Button">
+            <Setter Property="Background" Value="{StaticResource ColorAccionVerde}"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Padding" Value="15,10"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="6">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Opacity" Value="0.9"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </Application.Resources>
 </Application>

@@ -1,10 +1,11 @@
 ﻿<UserControl x:Class="CajaExpressSim.Views.ResultadosView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              mc:Ignorable="d" 
-             d:DesignHeight="500" d:DesignWidth="800" Background="White">
+             d:DesignHeight="650" d:DesignWidth="1100"
+             Background="{StaticResource ColorFondoPrincipal}">
 
     <Grid Margin="20">
         <Grid.RowDefinitions>
@@ -14,90 +15,174 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <TextBlock Text="Resultados de la Simulación" FontSize="24" FontWeight="Bold" Foreground="#333" Margin="0,0,0,20"/>
+        <Grid Margin="0,0,0,20">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="CAJA EXPRESS ANALYTICS | " FontSize="20" FontWeight="Bold" Foreground="White"/>
+                <TextBlock Text="Resultados del Período" FontSize="20" Foreground="{StaticResource ColorTextoSecundario}"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <TextBlock Text="Exportar: " Foreground="{StaticResource ColorTextoSecundario}" VerticalAlignment="Center"/>
+                <Button Content="[PDF]" Command="{Binding ExportarPdfCommand}" Foreground="#63B3ED" Background="Transparent" BorderThickness="0" Cursor="Hand"/>
+                <Button Content="[TXT]" Command="{Binding ExportarTxtCommand}" Foreground="#63B3ED" Background="Transparent" BorderThickness="0" Cursor="Hand"/>
+            </StackPanel>
+        </Grid>
 
-        <UniformGrid Grid.Row="1" Columns="3" Rows="2" Margin="0,0,0,20">
-
-            <UniformGrid.Resources>
-                <Style TargetType="Border">
-                    <Setter Property="Background" Value="#F0F0F0"/>
-                    <Setter Property="CornerRadius" Value="5"/>
-                    <Setter Property="Margin" Value="5"/>
-                    <Setter Property="Padding" Value="10"/>
-                </Style>
-                <Style TargetType="TextBlock" x:Key="Label">
-                    <Setter Property="Foreground" Value="#666"/>
-                    <Setter Property="FontSize" Value="12"/>
-                </Style>
-                <Style TargetType="TextBlock" x:Key="Value">
-                    <Setter Property="FontSize" Value="20"/>
-                    <Setter Property="FontWeight" Value="Bold"/>
-                    <Setter Property="HorizontalAlignment" Value="Center"/>
-                    <Setter Property="Margin" Value="0,5,0,0"/>
-                </Style>
-            </UniformGrid.Resources>
-
-            <Border>
+        <UniformGrid Grid.Row="1" Columns="4" Margin="0,0,0,20">
+            <Border Style="{StaticResource EstiloTarjeta}">
                 <StackPanel>
-                    <TextBlock Text="Total Clientes Atendidos" Style="{StaticResource Label}"/>
-                    <TextBlock Text="{Binding TotalClientes}" Style="{StaticResource Value}" Foreground="#007ACC"/>
+                    <TextBlock Text="Experiencia del Cliente (W)" Style="{StaticResource TituloTarjeta}"/>
+                    <TextBlock Text="{Binding PromedioSistema, StringFormat={}{0:N1} seg}" 
+                               FontSize="28" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center"/>
                 </StackPanel>
             </Border>
 
-            <Border>
+            <Border Style="{StaticResource EstiloTarjeta}">
                 <StackPanel>
-                    <TextBlock Text="Promedio en Sistema (W)" Style="{StaticResource Label}"/>
-                    <TextBlock Text="{Binding PromedioSistema, StringFormat=N2}" Style="{StaticResource Value}"/>
+                    <TextBlock Text="Tiempo en Cola (Wq)" Style="{StaticResource TituloTarjeta}"/>
+                    <TextBlock Text="{Binding PromedioCola, StringFormat={}{0:N1} seg}" 
+                               FontSize="28" FontWeight="Bold" Foreground="{StaticResource ColorAccionVerde}" HorizontalAlignment="Center"/>
                 </StackPanel>
             </Border>
 
-            <Border>
+            <Border Style="{StaticResource EstiloTarjeta}">
                 <StackPanel>
-                    <TextBlock Text="Promedio en Cola (Wq)" Style="{StaticResource Label}"/>
-                    <TextBlock Text="{Binding PromedioCola, StringFormat=N2}" Style="{StaticResource Value}"/>
+                    <TextBlock Text="Largo Cola Promedio (Lq)" Style="{StaticResource TituloTarjeta}"/>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <TextBlock Text="{Binding LargoColaPromedio, StringFormat={}{0:N1}}" 
+                                   FontSize="28" FontWeight="Bold" Foreground="#63B3ED"/>
+                        <TextBlock Text=" personas" FontSize="16" Foreground="{StaticResource ColorTextoSecundario}" VerticalAlignment="Bottom" Margin="5,0,0,4"/>
+                    </StackPanel>
                 </StackPanel>
             </Border>
 
-            <Border>
+            <Border Style="{StaticResource EstiloTarjeta}" BorderBrush="{StaticResource ColorPeligro}" BorderThickness="1">
                 <StackPanel>
-                    <TextBlock Text="Peor Tiempo de Espera" Style="{StaticResource Label}"/>
-                    <TextBlock Text="{Binding MaxEspera, StringFormat=N2}" Style="{StaticResource Value}" Foreground="Red"/>
+                    <TextBlock Text="Pico de Congestión" Style="{StaticResource TituloTarjeta}" Foreground="#FC8181"/>
+                    <TextBlock Text="{Binding MaxCola, StringFormat={}{0} personas}" 
+                               FontSize="28" FontWeight="Bold" Foreground="{StaticResource ColorPeligro}" HorizontalAlignment="Center"/>
                 </StackPanel>
             </Border>
-
-            <Border>
-                <StackPanel>
-                    <TextBlock Text="Cola Máxima (Pico)" Style="{StaticResource Label}"/>
-                    <TextBlock Text="{Binding MaxCola}" Style="{StaticResource Value}"/>
-                </StackPanel>
-            </Border>
-
-            <Border Visibility="Hidden"/>
         </UniformGrid>
 
-        <GroupBox Grid.Row="2" Header="Detalle de Utilización por Caja">
-            <DataGrid ItemsSource="{Binding ListaUtilizacion}" AutoGenerateColumns="False" 
-                      CanUserAddRows="False" IsReadOnly="True" Margin="5">
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="ID Caja" Binding="{Binding IdCaja}" Width="100"/>
-                    <DataGridTextColumn Header="Porcentaje de Ocupación" Binding="{Binding Porcentaje, StringFormat={}{0:N2}%}" Width="*"/>
-                    <DataGridTemplateColumn Header="Gráfico" Width="2*">
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <ProgressBar Value="{Binding Porcentaje}" Minimum="0" Maximum="100" Height="15" Foreground="#4CAF50"/>
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
-                </DataGrid.Columns>
-            </DataGrid>
-        </GroupBox>
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="15"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
 
-        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
-            <Button Content="Exportar a TXT" Command="{Binding ExportarTxtCommand}" 
-                    Padding="15,8" Margin="0,0,10,0"/>
+            <StackPanel Grid.Column="0">
 
-            <Button Content="Exportar a PDF" Command="{Binding ExportarPdfCommand}" 
-                    Padding="15,8" Background="#D32F2F" Foreground="White" FontWeight="Bold"/>
-        </StackPanel>
+                <Border Style="{StaticResource EstiloTarjeta}" Height="300">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock Text="Utilización de Recursos (ρ)" Style="{StaticResource TituloTarjeta}" FontSize="16" Foreground="White"/>
+
+                        <DataGrid Grid.Row="1" ItemsSource="{Binding ListaUtilizacion}" 
+                                  AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True"
+                                  Background="Transparent" BorderThickness="0" HeadersVisibility="None"
+                                  GridLinesVisibility="None" RowBackground="Transparent" VerticalScrollBarVisibility="Auto">
+                            <DataGrid.Columns>
+                                <DataGridTemplateColumn Width="*">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Grid Margin="0,5">
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="Auto"/>
+                                                    <RowDefinition Height="Auto"/>
+                                                </Grid.RowDefinitions>
+                                                <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                                                    <TextBlock Text="{Binding IdCaja, StringFormat=CAJA {0}: }" Foreground="White" FontWeight="Bold" FontSize="11"/>
+                                                    <TextBlock Text="{Binding Porcentaje, StringFormat={}{0:N1}% Ocupado}" Foreground="{StaticResource ColorTextoSecundario}" FontSize="11"/>
+                                                </StackPanel>
+                                                <ProgressBar Grid.Row="1" Value="{Binding Porcentaje}" Minimum="0" Maximum="100" Height="8" 
+                                                             Background="#2D3748" BorderThickness="0" Foreground="{StaticResource ColorAccionVerde}"/>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>
+                </Border>
+
+                <Border Style="{StaticResource EstiloTarjeta}" Margin="5,15,5,5">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Total Clientes Atendidos" VerticalAlignment="Center" Style="{StaticResource TituloTarjeta}" Margin="0"/>
+                        <TextBlock Grid.Column="1" Text="{Binding TotalClientes}" 
+                                   FontSize="24" FontWeight="Bold" Foreground="#63B3ED" HorizontalAlignment="Right"/>
+                    </Grid>
+                </Border>
+            </StackPanel>
+
+            <StackPanel Grid.Column="2">
+
+                <Border Style="{StaticResource EstiloTarjeta}">
+                    <StackPanel>
+                        <TextBlock Text="Calidad de Servicio: Percentiles de Espera" Style="{StaticResource TituloTarjeta}" Foreground="White"/>
+
+                        <Grid Margin="0,5">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="P50 (Mediana):" Foreground="#A0AEC0"/>
+                            <TextBlock Grid.Column="1" Text="{Binding P50, StringFormat={}{0:N1} seg}" Foreground="White" FontWeight="Bold"/>
+                        </Grid>
+                        <Separator Background="#2C3545" Margin="0,5"/>
+
+                        <Grid Margin="0,5">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="P90:" Foreground="#A0AEC0"/>
+                            <TextBlock Grid.Column="1" Text="{Binding P90, StringFormat={}{0:N1} seg}" Foreground="White" FontWeight="Bold"/>
+                        </Grid>
+                        <Separator Background="#2C3545" Margin="0,5"/>
+
+                        <Grid Margin="0,5">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="P95 (Casi peor caso):" Foreground="#A0AEC0"/>
+                            <TextBlock Grid.Column="1" Text="{Binding P95, StringFormat={}{0:N1} seg}" Foreground="White" FontWeight="Bold"/>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <Border Style="{StaticResource EstiloTarjeta}" Margin="5,15,5,5">
+                    <StackPanel>
+                        <TextBlock Text="Métricas Críticas" Style="{StaticResource TituloTarjeta}" Foreground="White"/>
+
+                        <Grid Margin="0,5">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="Promedio Sistema (Global):" Foreground="#A0AEC0"/>
+                            <TextBlock Grid.Column="1" Text="{Binding PromedioSistema, StringFormat={}{0:N1} seg}" Foreground="White" FontWeight="Bold" HorizontalAlignment="Right"/>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <Border Style="{StaticResource EstiloTarjeta}" Background="Transparent" BorderBrush="{StaticResource ColorPeligro}" BorderThickness="2" Margin="5,15,5,5" Height="110">
+                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <TextBlock Text="⚠️ INDICADOR DE CALIDAD CRÍTICO" Foreground="{StaticResource ColorPeligro}" FontWeight="Bold" FontSize="16" HorizontalAlignment="Center"/>
+                        <TextBlock Text="Tiempo Máximo de Espera Registrado:" Foreground="White" Margin="0,5,0,0" HorizontalAlignment="Center" FontSize="12"/>
+                        <TextBlock Text="{Binding MaxEspera, StringFormat=# {0:N0} Segundos}" 
+                                   Foreground="{StaticResource ColorPeligro}" FontSize="28" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,5,0,0"/>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </Grid>
     </Grid>
 </UserControl>
