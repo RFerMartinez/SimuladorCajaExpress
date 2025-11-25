@@ -62,7 +62,7 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto" Padding="0,0,5,0">
+            <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto" Padding="0,0,5,0" CanContentScroll="False">
                 <StackPanel>
                     <Border Style="{StaticResource EstiloTarjeta}" Padding="20">
                         <StackPanel>
@@ -133,7 +133,7 @@
                 </StackPanel>
             </ScrollViewer>
 
-            <ScrollViewer Grid.Column="2" VerticalScrollBarVisibility="Auto" Padding="0,0,5,0">
+            <ScrollViewer Grid.Column="2" VerticalScrollBarVisibility="Auto" Padding="0,0,5,0" CanContentScroll="False">
                 <Border Style="{StaticResource EstiloTarjeta}" Padding="20">
                     <StackPanel>
                         <TextBlock Text="Tiempos de Servicio (Normal)" Style="{StaticResource HeaderTitle}"/>

@@ -119,7 +119,8 @@
                         <DataGrid Grid.Row="1" ItemsSource="{Binding ListaUtilizacion}" 
                                   AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True"
                                   Background="Transparent" BorderThickness="0" HeadersVisibility="None"
-                                  GridLinesVisibility="None" RowBackground="Transparent" VerticalScrollBarVisibility="Auto">
+                                  GridLinesVisibility="None" RowBackground="Transparent" VerticalScrollBarVisibility="Auto"
+                                  ScrollViewer.CanContentScroll="False">
                             <DataGrid.Columns>
                                 <DataGridTemplateColumn Width="*">
                                     <DataGridTemplateColumn.CellTemplate>
