@@ -66,45 +66,80 @@ namespace CajaExpressSim.Models.Entidades
         // ==========================================
         private void DefinirPerfilAleatorio()
         {
-            // 1. Determinar TIPO DE CLIENTE (Probabilidades acumuladas: 0.60, 0.90, 1.00)
-            double rTipo = GeneradorEstadistico.GenerarU();
-
             // Variable temporal para el tiempo base de escaneo
             double tiempoEscaneo = 0;
+            double u = 0;
+            int x = 0;
+            double PRA = 0;
 
-            if (rTipo < 0.60)
+            // 1. Iniciar el Ciclo de Aceptación/Rechazo
+            do
             {
-                this.Tipo = TipoCliente.Estandar;
-                // Rango 11-40
-                this.CantArticulos = GenerarEnteroUniforme(11, 40);
-                // Normal(100, 20) - Estos valores deberían venir de ParametrosGlobales
-                tiempoEscaneo = GeneradorEstadistico.Normal(
-                    ParametrosGlobales.MediaEstandar,
-                    ParametrosGlobales.DesvioEstandar
-                );
-            }
-            else if (rTipo < 0.90)
+                // Generar u (Número Aleatorio de Aceptación/Rechazo)
+                u = GeneradorEstadistico.GenerarU();
+
+                x = GenerarEnteroUniforme(1, 3);
+
+
+                switch (x)
+                {
+                    case 1:
+                        PRA = 1.0;
+                        break;// Propuesta: Estándar
+                    case 2:
+                        PRA = 0.30 / 0.60;
+                        break;// Propuesta: Express
+                    case 3: 
+                        PRA = 0.10 / 0.60;
+                        break;// Propuesta: Carro Completo
+                    default:
+                        // No debería ocurrir
+                        PRA = 0;
+                        break;
+                }
+
+            } while (u > PRA); // Repetir mientras u > PRA (Rechazo)
+
+            switch (x)
             {
-                this.Tipo = TipoCliente.Express;
-                // Rango 1-10
-                this.CantArticulos = GenerarEnteroUniforme(1, 10);
-                // Normal(70, 10)
-                tiempoEscaneo = GeneradorEstadistico.Normal(
-                    ParametrosGlobales.MediaExpress,
-                    ParametrosGlobales.DesvioExpress
-                );
+                case 1: // Tipo: Estándar (60% probabilidad implícita)
+                    this.Tipo = TipoCliente.Estandar;
+                    // Rango 11-40
+                    this.CantArticulos = GenerarEnteroUniforme(11, 40);
+                    // Normal(100, 20) - Estos valores deberían venir de ParametrosGlobales
+                    tiempoEscaneo = GeneradorEstadistico.Normal(
+                        ParametrosGlobales.MediaEstandar,
+                        ParametrosGlobales.DesvioEstandar
+                    );
+                    break;
+
+                case 2: // Tipo: Express (30% probabilidad implícita)
+                    this.Tipo = TipoCliente.Express;
+                    // Rango 1-10
+                    this.CantArticulos = GenerarEnteroUniforme(1, 10);
+                    // Normal(70, 10)
+                    tiempoEscaneo = GeneradorEstadistico.Normal(
+                        ParametrosGlobales.MediaExpress,
+                        ParametrosGlobales.DesvioExpress
+                    );
+                    break;
+
+                case 3: // Tipo: Carro Completo (10% probabilidad implícita)
+                    this.Tipo = TipoCliente.CarroCompleto;
+                    // Rango 41-100 (Supuesto)
+                    this.CantArticulos = GenerarEnteroUniforme(41, 100);
+                    // Normal(600, 120)
+                    tiempoEscaneo = GeneradorEstadistico.Normal(
+                        ParametrosGlobales.MediaCarro,
+                        ParametrosGlobales.DesvioCarro
+                    );
+                    break;
+
+                default:
+                    // Este caso no debería ser alcanzado si x está entre 1 y 3
+                    throw new InvalidOperationException("Valor X de propuesta de cliente no válido.");
             }
-            else
-            {
-                this.Tipo = TipoCliente.CarroCompleto;
-                // Rango 41-100 (Supuesto)
-                this.CantArticulos = GenerarEnteroUniforme(41, 100);
-                // Normal(600, 120)
-                tiempoEscaneo = GeneradorEstadistico.Normal(
-                    ParametrosGlobales.MediaCarro,
-                    ParametrosGlobales.DesvioCarro
-                );
-            }
+
             this.TiempoServicio = tiempoEscaneo + ParametrosGlobales.TiempoCobroSegundos;
         }
 
