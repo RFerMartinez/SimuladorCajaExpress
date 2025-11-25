@@ -40,6 +40,13 @@ namespace CajaExpressSim.ViewModels
             set { _tiempoCobro = value; OnPropertyChanged(); }
         }
 
+        private int _capacidadCola;
+        public int CapacidadCola
+        {
+            get => _capacidadCola;
+            set { _capacidadCola = value; OnPropertyChanged(); }
+        }
+
         // 2. TASAS DE LLEGADA (Directo 80, 140, 100)
         private double _tasaLlegada1;
         public double TasaLlegada1
@@ -118,6 +125,8 @@ namespace CajaExpressSim.ViewModels
             CantidadCajas = ParametrosGlobales.CantidadCajas;
             TiempoCobro = ParametrosGlobales.TiempoCobroSegundos;
 
+            CapacidadCola = ParametrosGlobales.CapacidadColaPorCaja;
+
             TasaLlegada1 = ParametrosGlobales.TasaLlegadaFranja1;
             TasaLlegada2 = ParametrosGlobales.TasaLlegadaFranja2;
             TasaLlegada3 = ParametrosGlobales.TasaLlegadaFranja3;
@@ -145,6 +154,8 @@ namespace CajaExpressSim.ViewModels
 
                 ParametrosGlobales.CantidadCajas = CantidadCajas;
                 ParametrosGlobales.TiempoCobroSegundos = TiempoCobro;
+
+                ParametrosGlobales.CapacidadColaPorCaja = CapacidadCola;
 
                 ParametrosGlobales.TasaLlegadaFranja1 = TasaLlegada1;
                 ParametrosGlobales.TasaLlegadaFranja2 = TasaLlegada2;

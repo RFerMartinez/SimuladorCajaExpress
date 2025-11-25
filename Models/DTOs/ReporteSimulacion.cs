@@ -6,6 +6,13 @@ namespace CajaExpressSim.Models.DTOs
     {
         // Métricas Generales
         public int TotalClientesAtendidos { get; set; }
+
+        public int CantidadClientesRechazados { get; set; }
+
+        public int CantidadEstandar { get; set; }
+        public int CantidadExpress { get; set; }
+        public int CantidadCarro { get; set; }
+
         public double TiempoPromedioEnSistema { get; set; } // W
         public double TiempoPromedioEnCola { get; set; }    // Wq
 

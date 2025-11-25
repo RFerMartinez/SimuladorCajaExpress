@@ -17,49 +17,50 @@
 
         <Grid Margin="0,0,0,20">
             <StackPanel Orientation="Horizontal">
-                <TextBlock Text="CAJA EXPRESS ANALYTICS | " FontSize="20" FontWeight="Bold" Foreground="White"/>
-                <TextBlock Text="Resultados del Período" FontSize="20" Foreground="{StaticResource ColorTextoSecundario}"/>
+                <TextBlock Text="CAJA EXPRESS ANALYTICS | " FontSize="22" FontWeight="Bold" Foreground="White"/>
+                <TextBlock Text="Resultados del Período" FontSize="22" Foreground="{StaticResource ColorTextoSecundario}"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                <TextBlock Text="Exportar: " Foreground="{StaticResource ColorTextoSecundario}" VerticalAlignment="Center"/>
-                <Button Content="[PDF]" Command="{Binding ExportarPdfCommand}" Foreground="#63B3ED" Background="Transparent" BorderThickness="0" Cursor="Hand"/>
-                <Button Content="[TXT]" Command="{Binding ExportarTxtCommand}" Foreground="#63B3ED" Background="Transparent" BorderThickness="0" Cursor="Hand"/>
+                <TextBlock Text="Exportar: " Foreground="{StaticResource ColorTextoSecundario}" VerticalAlignment="Center" FontSize="14"/>
+                <Button Content="[PDF]" Command="{Binding ExportarPdfCommand}" Foreground="#63B3ED" Background="Transparent" BorderThickness="0" Cursor="Hand" FontSize="14"/>
+                <Button Content="[TXT]" Command="{Binding ExportarTxtCommand}" Foreground="#63B3ED" Background="Transparent" BorderThickness="0" Cursor="Hand" FontSize="14"/>
             </StackPanel>
         </Grid>
 
         <UniformGrid Grid.Row="1" Columns="4" Margin="0,0,0,20">
+
             <Border Style="{StaticResource EstiloTarjeta}">
                 <StackPanel>
-                    <TextBlock Text="Experiencia del Cliente (W)" Style="{StaticResource TituloTarjeta}"/>
+                    <TextBlock Text="Experiencia del Cliente (W)" Style="{StaticResource TituloTarjeta}" FontSize="16"/>
                     <TextBlock Text="{Binding PromedioSistema, StringFormat={}{0:N1} seg}" 
-                               FontSize="28" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center"/>
+                               FontSize="30" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center"/>
                 </StackPanel>
             </Border>
 
             <Border Style="{StaticResource EstiloTarjeta}">
                 <StackPanel>
-                    <TextBlock Text="Tiempo en Cola (Wq)" Style="{StaticResource TituloTarjeta}"/>
+                    <TextBlock Text="Tiempo en Cola (Wq)" Style="{StaticResource TituloTarjeta}" FontSize="16"/>
                     <TextBlock Text="{Binding PromedioCola, StringFormat={}{0:N1} seg}" 
-                               FontSize="28" FontWeight="Bold" Foreground="{StaticResource ColorAccionVerde}" HorizontalAlignment="Center"/>
+                               FontSize="30" FontWeight="Bold" Foreground="{StaticResource ColorAccionVerde}" HorizontalAlignment="Center"/>
                 </StackPanel>
             </Border>
 
             <Border Style="{StaticResource EstiloTarjeta}">
                 <StackPanel>
-                    <TextBlock Text="Largo Cola Promedio (Lq)" Style="{StaticResource TituloTarjeta}"/>
+                    <TextBlock Text="Largo Cola Promedio (Lq)" Style="{StaticResource TituloTarjeta}" FontSize="16"/>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                         <TextBlock Text="{Binding LargoColaPromedio, StringFormat={}{0:N1}}" 
-                                   FontSize="28" FontWeight="Bold" Foreground="#63B3ED"/>
-                        <TextBlock Text=" personas" FontSize="16" Foreground="{StaticResource ColorTextoSecundario}" VerticalAlignment="Bottom" Margin="5,0,0,4"/>
+                                   FontSize="30" FontWeight="Bold" Foreground="#63B3ED"/>
+                        <TextBlock Text=" personas" FontSize="18" Foreground="{StaticResource ColorTextoSecundario}" VerticalAlignment="Bottom" Margin="5,0,0,4"/>
                     </StackPanel>
                 </StackPanel>
             </Border>
 
             <Border Style="{StaticResource EstiloTarjeta}" BorderBrush="{StaticResource ColorPeligro}" BorderThickness="1">
                 <StackPanel>
-                    <TextBlock Text="Pico de Congestión" Style="{StaticResource TituloTarjeta}" Foreground="#FC8181"/>
+                    <TextBlock Text="Pico de Congestión" Style="{StaticResource TituloTarjeta}" Foreground="#FC8181" FontSize="16"/>
                     <TextBlock Text="{Binding MaxCola, StringFormat={}{0} personas}" 
-                               FontSize="28" FontWeight="Bold" Foreground="{StaticResource ColorPeligro}" HorizontalAlignment="Center"/>
+                               FontSize="30" FontWeight="Bold" Foreground="{StaticResource ColorPeligro}" HorizontalAlignment="Center"/>
                 </StackPanel>
             </Border>
         </UniformGrid>
@@ -73,13 +74,13 @@
 
             <StackPanel Grid.Column="0">
 
-                <Border Style="{StaticResource EstiloTarjeta}" Height="300">
+                <Border Style="{StaticResource EstiloTarjeta}" Height="340">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
-                        <TextBlock Text="Utilización de Recursos (ρ)" Style="{StaticResource TituloTarjeta}" FontSize="16" Foreground="White"/>
+                        <TextBlock Text="Utilización de Recursos (ρ)" Style="{StaticResource TituloTarjeta}" FontSize="18" Foreground="White"/>
 
                         <DataGrid Grid.Row="1" ItemsSource="{Binding ListaUtilizacion}" 
                                   AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True"
@@ -95,8 +96,8 @@
                                                     <RowDefinition Height="Auto"/>
                                                 </Grid.RowDefinitions>
                                                 <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
-                                                    <TextBlock Text="{Binding IdCaja, StringFormat=CAJA {0}: }" Foreground="White" FontWeight="Bold" FontSize="11"/>
-                                                    <TextBlock Text="{Binding Porcentaje, StringFormat={}{0:N1}% Ocupado}" Foreground="{StaticResource ColorTextoSecundario}" FontSize="11"/>
+                                                    <TextBlock Text="{Binding IdCaja, StringFormat=CAJA {0}: }" Foreground="White" FontWeight="Bold" FontSize="13"/>
+                                                    <TextBlock Text="{Binding Porcentaje, StringFormat={}{0:N1}% Ocupado}" Foreground="{StaticResource ColorTextoSecundario}" FontSize="13"/>
                                                 </StackPanel>
                                                 <ProgressBar Grid.Row="1" Value="{Binding Porcentaje}" Minimum="0" Maximum="100" Height="8" 
                                                              Background="#2D3748" BorderThickness="0" Foreground="{StaticResource ColorAccionVerde}"/>
@@ -109,16 +110,13 @@
                     </Grid>
                 </Border>
 
-                <Border Style="{StaticResource EstiloTarjeta}" Margin="5,15,5,5">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition/>
-                            <ColumnDefinition/>
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Text="Total Clientes Atendidos" VerticalAlignment="Center" Style="{StaticResource TituloTarjeta}" Margin="0"/>
-                        <TextBlock Grid.Column="1" Text="{Binding TotalClientes}" 
-                                   FontSize="24" FontWeight="Bold" Foreground="#63B3ED" HorizontalAlignment="Right"/>
-                    </Grid>
+                <Border Style="{StaticResource EstiloTarjeta}" Background="Transparent" BorderBrush="{StaticResource ColorPeligro}" BorderThickness="2" Margin="5,15,5,5" Height="140">
+                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <TextBlock Text="⚠️ INDICADOR DE CALIDAD CRÍTICO" Foreground="{StaticResource ColorPeligro}" FontWeight="Bold" FontSize="18" HorizontalAlignment="Center"/>
+                        <TextBlock Text="Tiempo Máximo de Espera Registrado:" Foreground="White" Margin="0,5,0,0" HorizontalAlignment="Center" FontSize="14"/>
+                        <TextBlock Text="{Binding MaxEspera, StringFormat=# {0:N0} Segundos}" 
+                                   Foreground="{StaticResource ColorPeligro}" FontSize="30" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,5,0,0"/>
+                    </StackPanel>
                 </Border>
             </StackPanel>
 
@@ -126,15 +124,15 @@
 
                 <Border Style="{StaticResource EstiloTarjeta}">
                     <StackPanel>
-                        <TextBlock Text="Calidad de Servicio: Percentiles de Espera" Style="{StaticResource TituloTarjeta}" Foreground="White"/>
+                        <TextBlock Text="Calidad de Servicio: Percentiles de Espera" Style="{StaticResource TituloTarjeta}" Foreground="White" FontSize="19"/>
 
                         <Grid Margin="0,5">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Text="P50 (Mediana):" Foreground="#A0AEC0"/>
-                            <TextBlock Grid.Column="1" Text="{Binding P50, StringFormat={}{0:N1} seg}" Foreground="White" FontWeight="Bold"/>
+                            <TextBlock Text="P50 (Mediana):" Foreground="#A0AEC0" FontSize="14"/>
+                            <TextBlock Grid.Column="1" Text="{Binding P50, StringFormat={}{0:N1} seg}" Foreground="White" FontWeight="Bold" FontSize="14"/>
                         </Grid>
                         <Separator Background="#2C3545" Margin="0,5"/>
 
@@ -143,8 +141,8 @@
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Text="P90:" Foreground="#A0AEC0"/>
-                            <TextBlock Grid.Column="1" Text="{Binding P90, StringFormat={}{0:N1} seg}" Foreground="White" FontWeight="Bold"/>
+                            <TextBlock Text="P90:" Foreground="#A0AEC0" FontSize="14"/>
+                            <TextBlock Grid.Column="1" Text="{Binding P90, StringFormat={}{0:N1} seg}" Foreground="White" FontWeight="Bold" FontSize="14"/>
                         </Grid>
                         <Separator Background="#2C3545" Margin="0,5"/>
 
@@ -153,35 +151,76 @@
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Text="P95 (Casi peor caso):" Foreground="#A0AEC0"/>
-                            <TextBlock Grid.Column="1" Text="{Binding P95, StringFormat={}{0:N1} seg}" Foreground="White" FontWeight="Bold"/>
+                            <TextBlock Text="P95 (Casi peor caso):" Foreground="#A0AEC0" FontSize="14"/>
+                            <TextBlock Grid.Column="1" Text="{Binding P95, StringFormat={}{0:N1} seg}" Foreground="White" FontWeight="Bold" FontSize="14"/>
                         </Grid>
                     </StackPanel>
                 </Border>
 
                 <Border Style="{StaticResource EstiloTarjeta}" Margin="5,15,5,5">
                     <StackPanel>
-                        <TextBlock Text="Métricas Críticas" Style="{StaticResource TituloTarjeta}" Foreground="White"/>
+                        <TextBlock Text="Desglose de Clientes Atendidos" Style="{StaticResource TituloTarjeta}" Foreground="White" FontSize="19"/>
 
                         <Grid Margin="0,5">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition/>
                                 <ColumnDefinition/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Text="Promedio Sistema (Global):" Foreground="#A0AEC0"/>
-                            <TextBlock Grid.Column="1" Text="{Binding PromedioSistema, StringFormat={}{0:N1} seg}" Foreground="White" FontWeight="Bold" HorizontalAlignment="Right"/>
+                            <TextBlock Text="Estándar:" Foreground="#A0AEC0" FontSize="14"/>
+                            <TextBlock Grid.Column="1" Text="{Binding CantEstandar}" Foreground="#007ACC" FontWeight="Bold" HorizontalAlignment="Right" FontSize="14"/>
+                        </Grid>
+
+                        <Separator Background="#2C3545" Margin="0,5"/>
+
+                        <Grid Margin="0,5">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="Express (Rápido):" Foreground="#A0AEC0" FontSize="14"/>
+                            <TextBlock Grid.Column="1" Text="{Binding CantExpress}" Foreground="#E65100" FontWeight="Bold" HorizontalAlignment="Right" FontSize="14"/>
+                        </Grid>
+
+                        <Separator Background="#2C3545" Margin="0,5"/>
+
+                        <Grid Margin="0,5">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="Carro Completo:" Foreground="#A0AEC0" FontSize="14"/>
+                            <TextBlock Grid.Column="1" Text="{Binding CantCarro}" Foreground="#2E7D32" FontWeight="Bold" HorizontalAlignment="Right" FontSize="14"/>
                         </Grid>
                     </StackPanel>
                 </Border>
 
-                <Border Style="{StaticResource EstiloTarjeta}" Background="Transparent" BorderBrush="{StaticResource ColorPeligro}" BorderThickness="2" Margin="5,15,5,5" Height="110">
-                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                        <TextBlock Text="⚠️ INDICADOR DE CALIDAD CRÍTICO" Foreground="{StaticResource ColorPeligro}" FontWeight="Bold" FontSize="16" HorizontalAlignment="Center"/>
-                        <TextBlock Text="Tiempo Máximo de Espera Registrado:" Foreground="White" Margin="0,5,0,0" HorizontalAlignment="Center" FontSize="12"/>
-                        <TextBlock Text="{Binding MaxEspera, StringFormat=# {0:N0} Segundos}" 
-                                   Foreground="{StaticResource ColorPeligro}" FontSize="28" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,5,0,0"/>
-                    </StackPanel>
-                </Border>
+                <UniformGrid Columns="2" Margin="0,15,0,0">
+
+                    <Border Style="{StaticResource EstiloTarjeta}" Margin="0,0,5,0">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="Atendidos" VerticalAlignment="Center" Style="{StaticResource TituloTarjeta}" Margin="0" FontSize="16"/>
+                            <TextBlock Grid.Column="1" Text="{Binding TotalClientes}" 
+                                       FontSize="26" FontWeight="Bold" Foreground="#63B3ED" HorizontalAlignment="Right"/>
+                        </Grid>
+                    </Border>
+
+                    <Border Style="{StaticResource EstiloTarjeta}" Margin="5,0,0,0" BorderBrush="#502020" BorderThickness="1">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="Rechazados" VerticalAlignment="Center" Style="{StaticResource TituloTarjeta}" Margin="0" Foreground="#FC8181" FontSize="16"/>
+                            <TextBlock Grid.Column="1" Text="{Binding Rechazados}" 
+                                       FontSize="26" FontWeight="Bold" Foreground="#FC8181" HorizontalAlignment="Right"/>
+                        </Grid>
+                    </Border>
+                </UniformGrid>
+
             </StackPanel>
         </Grid>
     </Grid>

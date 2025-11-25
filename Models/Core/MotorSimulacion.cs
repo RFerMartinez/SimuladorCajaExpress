@@ -46,6 +46,8 @@ namespace CajaExpressSim.Models.Core
         // ==========================================
         public List<Cliente> ClientesAtendidos { get; private set; }
 
+        public int ClientesRechazados { get; private set; }
+
         private int _contadorClientes;
 
         // Hora de cierre de entrada: 22:00 hs (50400 segundos desde las 08:00)
@@ -57,8 +59,6 @@ namespace CajaExpressSim.Models.Core
             GestorColas = new GestorDeColas();
             _listaEventos = new List<Evento>();
             ClientesAtendidos = new List<Cliente>();
-
-            // Instanciamos el Reloj
             Reloj = new Reloj();
         }
 
@@ -69,6 +69,7 @@ namespace CajaExpressSim.Models.Core
         {
             Reloj.Reiniciar();
             _contadorClientes = 0;
+            ClientesRechazados = 0;
 
             _listaEventos.Clear();
             GestorColas.Reiniciar();
@@ -145,7 +146,18 @@ namespace CajaExpressSim.Models.Core
             }
             else
             {
-                // ESPERAR: Va a la cola (el Gestor decide si es VIP o Normal)
+                // 2. Verificar CAPACIDAD antes de entrar a la cola
+                // Capacidad Total del Sistema = (Capacidad por Caja * Cantidad de Cajas)
+                int capacidadTotalSistema = ParametrosGlobales.CantidadCajas * ParametrosGlobales.CapacidadColaPorCaja;
+
+                if (GestorColas.CantidadTotalEnCola >= capacidadTotalSistema)
+                {
+                    // RECHAZO (Balking): El cliente se va
+                    ClientesRechazados++;
+                    return;
+                }
+
+                // Si hay lugar, entra a la cola
                 GestorColas.AgregarCliente(nuevoCliente);
             }
         }

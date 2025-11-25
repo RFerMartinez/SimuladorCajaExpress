@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using CajaExpressSim.Models.Core;
-using CajaExpressSim.Models.Config; // Importante
-using CajaExpressSim.Models.Entidades; // Importante
+using CajaExpressSim.Models.Config;
+using CajaExpressSim.Models.Entidades;
 using CajaExpressSim.Services;
 using CajaExpressSim.Helpers;
 
@@ -19,7 +19,22 @@ namespace CajaExpressSim.ViewModels
         public ResultadosViewModel ResultadosVM { get; set; }
 
         private object _vistaActual;
-        public object VistaActual { get => _vistaActual; set { _vistaActual = value; OnPropertyChanged(); } }
+        public object VistaActual
+        {
+            get => _vistaActual;
+            set
+            {
+                _vistaActual = value;
+                OnPropertyChanged();
+                // Notificamos cambios en los estados visuales
+                OnPropertyChanged(nameof(EsVistaResultados));
+                OnPropertyChanged(nameof(EsVistaConfiguracion));
+            }
+        }
+
+        // Propiedades para controlar visibilidad de botones
+        public bool EsVistaResultados => VistaActual is ResultadosViewModel;
+        public bool EsVistaConfiguracion => VistaActual is ConfiguracionViewModel; // NUEVO
 
         private bool _estaSimulando;
         public bool EstaSimulando
@@ -59,62 +74,43 @@ namespace CajaExpressSim.ViewModels
 
             try
             {
-                // 1. Calcular días totales
                 int diasTotales = ParametrosGlobales.SemanasASimular * ParametrosGlobales.DiasLaboralesPorSemana;
-
-                // Acumuladores GLOBALES para todo el periodo
                 List<Cliente> historialGlobal = new List<Cliente>();
                 Dictionary<int, double> tiemposCajasGlobal = new Dictionary<int, double>();
                 int maxColaGlobal = 0;
+                int totalRechazadosGlobal = 0;
 
                 await Task.Run(() =>
                 {
-                    // BUCLE DE DÍAS
                     for (int dia = 1; dia <= diasTotales; dia++)
                     {
-                        // Actualizar estado en UI (ej: "Simulando Día 3 de 24...")
-                        // Nota: Como estamos en otro hilo, usamos Dispatcher si fuera WPF puro, 
-                        // pero con el binding de string simple suele funcionar si la propiedad notifica.
                         EstadoSimulacion = $"Simulando Día {dia} de {diasTotales}...";
-
-                        // A. Inicializar Motor (Resetea reloj, colas y cajas para un nuevo día)
                         _motor.Inicializar();
-
-                        // B. Correr el día
                         _motor.Simular();
 
-                        // C. ACUMULAR RESULTADOS DE ESTE DÍA
                         historialGlobal.AddRange(_motor.ClientesAtendidos);
+                        totalRechazadosGlobal += _motor.ClientesRechazados;
 
                         if (_motor.GestorColas.MaximaLongitudRegistrada > maxColaGlobal)
-                        {
                             maxColaGlobal = _motor.GestorColas.MaximaLongitudRegistrada;
-                        }
 
-                        // Acumular tiempo de uso de cajas
                         foreach (var caja in _motor.Cajas)
                         {
-                            if (!tiemposCajasGlobal.ContainsKey(caja.Id))
-                                tiemposCajasGlobal[caja.Id] = 0;
-
+                            if (!tiemposCajasGlobal.ContainsKey(caja.Id)) tiemposCajasGlobal[caja.Id] = 0;
                             tiemposCajasGlobal[caja.Id] += caja.TiempoTotalOcupada;
                         }
                     }
                 });
 
                 EstadoSimulacion = "Calculando estadísticas consolidadas...";
-
-                // Calcular tiempo total simulado (Segundos por día * días totales)
-                // 14 horas operativas = 50400 segundos por día
                 double tiempoTotalSimulado = 50400.0 * diasTotales;
 
-                // Llamamos a la calculadora con los datos consolidados
-                // NOTA: Tuvimos que sobrecargar GenerarReporte para aceptar el diccionario de cajas
                 var reporteFinal = CalculadoraEstadisticas.GenerarReporteConsolidado(
                     historialGlobal,
                     tiemposCajasGlobal,
                     maxColaGlobal,
-                    tiempoTotalSimulado
+                    tiempoTotalSimulado,
+                    totalRechazadosGlobal
                 );
 
                 ResultadosVM.CargarDatos(reporteFinal);

@@ -15,6 +15,11 @@
         public static double TiempoCobroSegundos { get; set; } = 0;
 
         // ==========================================
+        // Capacidad de Cola
+        // ==========================================
+        public static int CapacidadColaPorCaja { get; set; } = 6;
+
+        // ==========================================
         // TASAS DE LLEGADA
         // ==========================================
         public static double TasaLlegadaFranja1 { get; set; } = 80;
