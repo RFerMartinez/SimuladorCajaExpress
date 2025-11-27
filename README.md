@@ -4,7 +4,7 @@
 ![Tecnología](https://img.shields.io/badge/C%23-.NET%20Framework%204.7.2-blue)
 ![Plataforma](https://img.shields.io/badge/Plataforma-Windows%20WPF-blueviolet)
 
-Simulador estocástico de un sistema de colas para un supermercado, desarrollado en C# (WPF) bajo el patrón **MVVM**. Este proyecto implementa un motor de simulación basado en eventos discretos (*Discrete Event Simulation*) para analizar el desempeño y la congestión en líneas de espera con prioridades.
+Simulador estocástico de un sistema de colas para un supermercado, para la cátedra de SIMULACIÓN de la carrera Ing. en Sistemas de Información en UNCAUS, desarrollado en C# (WPF) bajo el patrón **MVVM**. Este proyecto implementa un motor de simulación basado en eventos discretos (*Discrete Event Simulation*) para analizar el desempeño y la congestión en líneas de espera con prioridades.
 
 ## 📋 Características Principales
 
