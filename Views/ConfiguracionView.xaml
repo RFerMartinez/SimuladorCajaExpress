@@ -95,8 +95,24 @@
                             </StackPanel>
 
                             <StackPanel>
-                                <TextBlock Text="Tiempo de Cobro Adicional (Segundos):" Style="{StaticResource Lbl}"/>
-                                <TextBox Text="{Binding TiempoCobro}"/>
+                                <TextBlock Text="Tiempo de Cobro (Normal):" Style="{StaticResource HeaderTitle}" FontSize="16" Margin="0,10,0,5"/>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="15"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <StackPanel Grid.Column="0">
+                                        <TextBlock Text="Media μ (seg):" Style="{StaticResource Lbl}"/>
+                                        <TextBox Text="{Binding MediaCobro}"/>
+                                    </StackPanel>
+
+                                    <StackPanel Grid.Column="2">
+                                        <TextBlock Text="Desviación σ:" Style="{StaticResource Lbl}"/>
+                                        <TextBox Text="{Binding DesvioCobro}"/>
+                                    </StackPanel>
+                                </Grid>
                             </StackPanel>
                         </StackPanel>
                     </Border>

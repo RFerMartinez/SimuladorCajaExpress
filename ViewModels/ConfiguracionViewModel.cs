@@ -33,11 +33,19 @@ namespace CajaExpressSim.ViewModels
             set { _cantidadCajas = value; OnPropertyChanged(); }
         }
 
-        private double _tiempoCobro;
-        public double TiempoCobro
+        // Tiempos de COBRO
+        private double _mediaCobro;
+        public double MediaCobro
         {
-            get => _tiempoCobro;
-            set { _tiempoCobro = value; OnPropertyChanged(); }
+            get => _mediaCobro;
+            set { _mediaCobro = value; OnPropertyChanged(); }
+        }
+
+        private double _desvioCobro;
+        public double DesvioCobro
+        {
+            get => _desvioCobro;
+            set { _desvioCobro = value; OnPropertyChanged(); }
         }
 
         private int _capacidadCola;
@@ -123,7 +131,9 @@ namespace CajaExpressSim.ViewModels
             DiasPorSemana = ParametrosGlobales.DiasLaboralesPorSemana;
 
             CantidadCajas = ParametrosGlobales.CantidadCajas;
-            TiempoCobro = ParametrosGlobales.TiempoCobroSegundos;
+
+            MediaCobro = ParametrosGlobales.MediaCobro;
+            DesvioCobro = ParametrosGlobales.DesvioCobro;
 
             CapacidadCola = ParametrosGlobales.CapacidadColaPorCaja;
 
@@ -148,12 +158,16 @@ namespace CajaExpressSim.ViewModels
                 if (CantidadCajas <= 0) throw new Exception("Debe haber al menos 1 caja.");
                 if (TasaLlegada1 <= 0 || TasaLlegada2 <= 0 || TasaLlegada3 <= 0)
                     throw new Exception("Las tasas de llegada deben ser positivas.");
+                if (MediaCobro < 0 || DesvioCobro < 0)
+                    throw new Exception("Los tiempos de cobro no pueden ser negativos.");
 
                 ParametrosGlobales.SemanasASimular = Semanas;
                 ParametrosGlobales.DiasLaboralesPorSemana = DiasPorSemana;
 
                 ParametrosGlobales.CantidadCajas = CantidadCajas;
-                ParametrosGlobales.TiempoCobroSegundos = TiempoCobro;
+
+                ParametrosGlobales.MediaCobro = MediaCobro;
+                ParametrosGlobales.DesvioCobro = DesvioCobro;
 
                 ParametrosGlobales.CapacidadColaPorCaja = CapacidadCola;
 

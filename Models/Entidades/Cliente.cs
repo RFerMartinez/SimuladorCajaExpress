@@ -140,7 +140,19 @@ namespace CajaExpressSim.Models.Entidades
                     throw new InvalidOperationException("Valor X de propuesta de cliente no válido.");
             }
 
-            this.TiempoServicio = tiempoEscaneo + ParametrosGlobales.TiempoCobroSegundos;
+            // CALCULO FINAL DEL TIEMPO DE SERVICIO
+
+            // Generar tiempo de cobro aleatorio (Normal)
+            double tiempoCobroAleatorio = GeneradorEstadistico.Normal(
+                ParametrosGlobales.MediaCobro,
+                ParametrosGlobales.DesvioCobro
+            );
+
+            // Protección: El tiempo no puede ser negativo (aunque sea improbable con la Normal)
+            if (tiempoCobroAleatorio < 0) tiempoCobroAleatorio = 0;
+
+            // Sumar: Tiempo de Escaneo (Artículos) + Tiempo de Cobro (Pago)
+            this.TiempoServicio = tiempoEscaneo + tiempoCobroAleatorio;
         }
 
         // Helper para generar Uniforme Entera (A + R * (B - A + 1))

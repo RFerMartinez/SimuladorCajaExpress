@@ -22,7 +22,7 @@ namespace CajaExpressSim.Services
             // 2. RESUMEN DE PARÁMETROS (Contexto de la simulación)
             sb.AppendLine("CONFIGURACIÓN APLICADA:");
             sb.AppendLine($"* Cantidad de Cajas: {ParametrosGlobales.CantidadCajas}");
-            sb.AppendLine($"* Tiempo de Cobro Fijo: {ParametrosGlobales.TiempoCobroSegundos} seg");
+            sb.AppendLine($"* Tiempo de Cobro (Normal): Media {ParametrosGlobales.MediaCobro}s / Desv {ParametrosGlobales.DesvioCobro}s");
             sb.AppendLine($"* Tasas de Llegada (Clientes/Hora): {ParametrosGlobales.TasaLlegadaFranja1} / {ParametrosGlobales.TasaLlegadaFranja2} / {ParametrosGlobales.TasaLlegadaFranja3}");
             sb.AppendLine("----------------------------------------");
 

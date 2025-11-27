@@ -3,7 +3,7 @@
     public static class ParametrosGlobales
     {
         // ==========================================
-        // PARAMETROS DE TIEMPO DE SIMULACIÓN (NUEVO)
+        // PARAMETROS DE TIEMPO DE SIMULACIÓN
         // ==========================================
         public static int SemanasASimular { get; set; } = 1;
         public static int DiasLaboralesPorSemana { get; set; } = 6; // Ej: Lunes a Sábado
@@ -30,6 +30,12 @@
         public static double IntervaloLlegadaFranja1 => TasaLlegadaFranja1 > 0 ? 3600.0 / TasaLlegadaFranja1 : 0;
         public static double IntervaloLlegadaFranja2 => TasaLlegadaFranja2 > 0 ? 3600.0 / TasaLlegadaFranja2 : 0;
         public static double IntervaloLlegadaFranja3 => TasaLlegadaFranja3 > 0 ? 3600.0 / TasaLlegadaFranja3 : 0;
+
+        // ==========================================
+        // PARAMETROS DE CORBO
+        // ==========================================
+        public static double MediaCobro { get; set; } = 30;
+        public static double DesvioCobro { get; set; } = 5;
 
         // ==========================================
         // PARAMETROS DE SERVICIO
