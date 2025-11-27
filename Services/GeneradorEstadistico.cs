@@ -15,6 +15,14 @@ namespace CajaExpressSim.Services
         private const long a = 1664525;
         private const long m = 2147483647;
 
+        public static Models.DTOs.ReporteSimulacion ReporteSimulacion
+        {
+            get => default;
+            set
+            {
+            }
+        }
+
         /// <summary>
         /// Genera un número pseudoaleatorio uniforme (u) entre 0 y 1.
         /// </summary>
