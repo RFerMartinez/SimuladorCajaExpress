@@ -8,6 +8,7 @@ using Microsoft.Win32;
 using CajaExpressSim.Models.DTOs;
 using CajaExpressSim.Services;
 using CajaExpressSim.Helpers;
+using System.Windows.Media;
 
 namespace CajaExpressSim.ViewModels
 {
@@ -37,12 +38,30 @@ namespace CajaExpressSim.ViewModels
         private double _p95; public double P95 { get => _p95; set { _p95 = value; OnPropertyChanged(); } }
 
         public ObservableCollection<UtilizacionItem> ListaUtilizacion { get; set; }
+
+        // GRAFICO
+        private PointCollection _puntosGrafico;
+        public PointCollection PuntosGrafico
+        {
+            get => _puntosGrafico;
+            set { _puntosGrafico = value; OnPropertyChanged(); }
+        }
+        // PROPIEDADES PARA ETIQUETAS DEL EJE Y
+        private string _ejeYTope;
+        public string EjeYTope { get => _ejeYTope; set { _ejeYTope = value; OnPropertyChanged(); } }
+
+        private string _ejeYMedio;
+        public string EjeYMedio { get => _ejeYMedio; set { _ejeYMedio = value; OnPropertyChanged(); } }
+
         public ICommand ExportarPdfCommand { get; private set; }
         public ICommand ExportarTxtCommand { get; private set; }
 
         public ResultadosViewModel()
         {
             ListaUtilizacion = new ObservableCollection<UtilizacionItem>();
+
+            PuntosGrafico = new PointCollection();
+
             ExportarPdfCommand = new RelayCommand(ExportarPDF);
             ExportarTxtCommand = new RelayCommand(ExportarTXT);
         }
@@ -74,6 +93,40 @@ namespace CajaExpressSim.ViewModels
             {
                 ListaUtilizacion.Add(new UtilizacionItem { IdCaja = kvp.Key, Porcentaje = kvp.Value });
             }
+
+            // --- LÓGICA DE GRÁFICO CON EJE Y ---
+
+            // 1. Encontrar el valor máximo real en los datos
+            double maxValorReal = 0;
+            foreach (var p in reporte.GraficoEsperaPorHora)
+            {
+                if (p.Y > maxValorReal) maxValorReal = p.Y;
+            }
+            if (maxValorReal == 0) maxValorReal = 1; // Evitar división por 0
+
+            // 2. Definir el "Techo" del gráfico (Le damos un 10% de aire arriba)
+            // Si el max es 100, el techo será 110. Así el pico no toca el borde.
+            double techoGrafico = maxValorReal * 1.1;
+
+            // 3. Generar las etiquetas de texto
+            EjeYTope = $"{techoGrafico:N0}";       // Ej: "150"
+            EjeYMedio = $"{techoGrafico / 2:N0}"; // Ej: "75"
+
+            // 4. Escalar los puntos relativos a ese Techo
+            var coleccion = new PointCollection();
+            foreach (var p in reporte.GraficoEsperaPorHora)
+            {
+                // Regla de 3: Si techoGrafico es 100% (altura 100), ¿cuánto es p.Y?
+                double yNormalizada = (p.Y / techoGrafico) * 100;
+                coleccion.Add(new Point(p.X, yNormalizada));
+            }
+
+            // Cerrar el polígono por abajo
+            coleccion.Add(new Point(24, 0));
+            coleccion.Add(new Point(0, 0));
+
+            PuntosGrafico = coleccion;
+            // -----------------------------------
         }
 
         private void ExportarPDF(object obj) { if (_reporteActual != null) GuardarArchivo("PDF (*.pdf)|*.pdf", r => ExportadorPDF.GuardarReporte(r, _reporteActual)); }
